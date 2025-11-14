@@ -11,9 +11,11 @@ public class ShooterIO {
     private double currentPower = 0.0;
     private double maxRampRate = 0.05;
     private boolean shooting = true;
+    private double shootingPower;
 
-    public ShooterIO(DcMotor s1) {
+    public ShooterIO(DcMotor s1, double shootingPower) {
         this.s1 = s1;
+        this.shootingPower = shootingPower;
 //        this.s2 = s2;
 //        this.s2.setDirection(DcMotorSimple.Direction.REVERSE);
     }
@@ -23,7 +25,7 @@ public class ShooterIO {
             shooting = !shooting;
         }
         if (shooting) {
-            targetPower = 0.59;
+            targetPower = shootingPower;
         } else {
             targetPower = 0.0;
         }
