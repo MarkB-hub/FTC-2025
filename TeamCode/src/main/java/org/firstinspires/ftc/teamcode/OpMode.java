@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.logging.Logger;
 import org.firstinspires.ftc.teamcode.subsystems.drive.DriveIO;
 import org.firstinspires.ftc.teamcode.subsystems.intake.IntakeIO;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.ShooterIO;
@@ -19,26 +18,11 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import java.util.List;
 
 @TeleOp
-public class DIT_IS_DE_CODE_OpMode extends LinearOpMode {
-    public int logIndex = 0;
+public class OpMode extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         DcMotor fl = null, fr = null, bl = null, br = null, s = null, i = null;
         WebcamName camera = null;
-
-
-        /**
-         * Motor configs are:
-         * fl -> links voor
-         * bl -> links achter
-         * fr -> rechts voor
-         * br -> rechts achter
-         *
-         * shooter -> shooter motor
-         * intake -> intake motor
-         *
-         * imu and Webcam 1 should be defined (Webcam 1 is not needed for the scrimmage though)
-         */
 
         try { fl = hardwareMap.dcMotor.get("fl"); } catch (Exception e) { telemetry.addLine("Missing: fl"); }
         try { fr = hardwareMap.dcMotor.get("fr"); } catch (Exception e) { telemetry.addLine("Missing: fr"); }
@@ -68,91 +52,44 @@ public class DIT_IS_DE_CODE_OpMode extends LinearOpMode {
         if (fr != null) fr.setDirection(DcMotorSimple.Direction.FORWARD);
         if (s != null) s.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        /**
-         * Drivetrain IO, you can change the exponent value (currently 1.5) to make the controlling more precise.
-         */
+        DriveIO drive = (fl != null && fr != null && bl != null && br != null) ? new DriveIO(fl, fr, bl, br, Constants.DRIVE_CONTROLLER_EXPONENT, imu) : null;
 
-        DriveIO drive = (fl != null && fr != null && bl != null && br != null)
-                ? new DriveIO(fl, fr, bl, br, 1.5, imu)
-                : null;
+        ShooterIO shooter = (s != null) ? new ShooterIO(s) : null;
+        if (shooter != null) {shooter.setRampRate(Constants.SHOOTER_RAMP_RATE); shooter.setShootingPower(Constants.DEFAULT_SHOOTER_SPEED);}
 
+        IntakeIO intake = (i != null) ? new IntakeIO(i) : null;
 
-        /**
-         * Shooter IO, parameters are a DcMotor, and the second one is the shooting power.
-         * 0.59 is default for what we used at school too.
-         * setRampRate is the motion profile ramp rate, increasing every iteration of the program. This might need to be changed, because it ramps way too fast.
-         */
+        VisionIO vision = (camera != null) ? new VisionIO(camera) : null;
 
-        ShooterIO shooter = (s != null)
-                ? new ShooterIO(s, 0.59)
-                : null;
-        if (shooter != null) shooter.setRampRate(0.005);
-
-        /**
-         * Intake IO, current controls are: B = intake, Y = outtake.
-         * In buttons that would be.
-         *   Y
-         * x  B
-         *  x
-         */
-
-        IntakeIO intake = (i != null)
-                ? new IntakeIO(i)
-                : null;
-
-
-        /**
-         * Vision is redundant for the scrimmage. It turns off automatically if the camera is not plugged in.
-         */
-
-        VisionIO vision = (camera != null)
-                ? new VisionIO(camera)
-                : null;
-        VisionLocalize localize = (vision != null)
-                ? new VisionLocalize(vision)
-                : null;
-
-
-        telemetry.addLine("Initialization Complete — waiting for start.");
-        telemetry.update();
-
-        Logger logger = new Logger(telemetry);
+        VisionLocalize localize = (vision != null) ? new VisionLocalize(vision) : null;
 
         waitForStart();
 
         if (isStopRequested()) return;
 
-        /**
-         * No need to change the actual looping of the code, you just need to tune the shooter values
-         * */
-
         while (opModeIsActive()) {
-            logIndex = 0;
-            // Updating
-            if (drive != null) drive.updateDrive(gamepad1, logger, logIndex);
-            logIndex += 4;
-            if (shooter != null) shooter.updateShooter(gamepad1);
+            if (drive != null) drive.updateDrive(gamepad1);
             if (intake != null) intake.updateIntake(gamepad1);
+            if (shooter != null) shooter.updateShooter(gamepad1);
             if (localize != null) localize.update();
 
-            logger.logValue(imu.getRobotYawPitchRollAngles().toString(), logIndex);
-            logIndex ++;
 
-            // Logging
+
             if (vision != null && vision.isActive()) {
                 List<AprilTagDetection> detections = vision.getDetections();
                 if (detections != null && !detections.isEmpty()) {
-                    AprilTagDetection firstTag = detections.get(0);
-                    logger.logValue("Tag: " + firstTag.id, logIndex);
-                    logger.logValue("Pose: " + localize.getLastPose(), logIndex + 1);
-                } else {
-                    logger.logValue("Tag: None", 0);
-                    logger.logValue("Pose: " + localize.getLastPose(), logIndex + 1);
-                }
-                logIndex += 2;
-            }
 
-            logger.update();
+                    for (AprilTagDetection tag : detections) {
+                        if (tag.id == 20 || tag.id == 23) {
+                            telemetry.addLine("Tag: " + tag.id);
+                            telemetry.addLine("Distance: " + tag.ftcPose.range);
+
+                            shooter.setShootingPower(shooter.lookup(tag.ftcPose.range,Constants.SHOOTER_LOOKUP_TABLE_DISTANCES,Constants.SHOOTER_LOOKUP_TABLE_VALUES));
+                        }
+                    }
+                }
+            }
+            telemetry.update();
         }
 
         if (vision != null) vision.stop();

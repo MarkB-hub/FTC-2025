@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.logging.Logger;
 
 public class DriveIO {
     private final DcMotor fr, fl, br, bl;
@@ -20,7 +19,7 @@ public class DriveIO {
         this.imu = imu;
     }
 
-    public void updateDrive(Gamepad gamepad1, Logger logger, int index) {
+    public void updateDrive(Gamepad gamepad1) {
         double y = -gamepad1.left_stick_y;
         double x = gamepad1.left_stick_x;
         double rx = gamepad1.right_stick_x;
@@ -45,12 +44,6 @@ public class DriveIO {
         double backLeftPower = (rotY - rotX + rx) / denominator;
         double frontRightPower = (rotY - rotX - rx) / denominator;
         double backRightPower = (rotY + rotX - rx) / denominator;
-
-        logger.logValue(Double.toString(frontLeftPower), index);
-        logger.logValue(Double.toString(backLeftPower), index + 1);
-        logger.logValue(Double.toString(frontRightPower), index + 2);
-        logger.logValue(Double.toString(backRightPower), index + 3);
-
 
         fl.setPower(frontLeftPower);
         bl.setPower(backLeftPower);
