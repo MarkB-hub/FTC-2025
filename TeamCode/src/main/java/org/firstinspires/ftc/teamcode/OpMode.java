@@ -73,18 +73,16 @@ public class OpMode extends LinearOpMode {
             if (shooter != null) shooter.updateShooter(gamepad1);
             if (localize != null) localize.update();
 
-
+            telemetry.addLine(imu.getRobotYawPitchRollAngles().toString());
 
             if (vision != null && vision.isActive()) {
                 List<AprilTagDetection> detections = vision.getDetections();
                 if (detections != null && !detections.isEmpty()) {
 
                     for (AprilTagDetection tag : detections) {
-                        if (tag.id == 20 || tag.id == 23) {
+                        if (tag.id == 20 || tag.id == 24) {
                             telemetry.addLine("Tag: " + tag.id);
                             telemetry.addLine("Distance: " + tag.ftcPose.range);
-
-                            shooter.setShootingPower(shooter.lookup(tag.ftcPose.range,Constants.SHOOTER_LOOKUP_TABLE_DISTANCES,Constants.SHOOTER_LOOKUP_TABLE_VALUES));
                         }
                     }
                 }
