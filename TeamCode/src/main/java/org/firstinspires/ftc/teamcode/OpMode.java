@@ -74,19 +74,6 @@ public class OpMode extends LinearOpMode {
             if (localize != null) localize.update();
 
             telemetry.addLine(imu.getRobotYawPitchRollAngles().toString());
-
-            if (vision != null && vision.isActive()) {
-                List<AprilTagDetection> detections = vision.getDetections();
-                if (detections != null && !detections.isEmpty()) {
-
-                    for (AprilTagDetection tag : detections) {
-                        if (tag.id == 20 || tag.id == 24) {
-                            telemetry.addLine("Tag: " + tag.id);
-                            telemetry.addLine("Distance: " + tag.ftcPose.range);
-                        }
-                    }
-                }
-            }
             telemetry.update();
         }
 

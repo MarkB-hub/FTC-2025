@@ -23,7 +23,5 @@ public class IntakeIO {
             targetPower = 0.0;
         }
         i.setPower(targetPower);
-
-
     }
 }

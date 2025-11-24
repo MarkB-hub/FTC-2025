@@ -9,6 +9,7 @@ public class DriveIO {
     private final DcMotor fr, fl, br, bl;
     private final double exponent;
     private final IMU imu;
+    private double rotationOffset = 0;
 
     public DriveIO(DcMotor fl, DcMotor fr, DcMotor bl, DcMotor br, double exponent, IMU imu) {
         this.fl = fl;
@@ -19,6 +20,9 @@ public class DriveIO {
         this.imu = imu;
     }
 
+    public void setRotationOffset(double rotationOffset) {
+        this.rotationOffset = rotationOffset;
+    }
     public void updateDrive(Gamepad gamepad1) {
         double y = -gamepad1.left_stick_y;
         double x = gamepad1.left_stick_x;
@@ -26,7 +30,7 @@ public class DriveIO {
 
         y = exponentialInput(y, this.exponent);
         x = exponentialInput(x, this.exponent);
-        rx = exponentialInput(rx, this.exponent);
+        rx = exponentialInput(rx, this.exponent) + rotationOffset;
 
         if (gamepad1.options) {
             imu.resetYaw();
