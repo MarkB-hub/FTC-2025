@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.roadrunnerMeuk;
+package org.firstinspires.ftc.teamcode.subsystems.drive;
 
 import androidx.annotation.NonNull;
 
@@ -41,6 +41,8 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.roadrunnerMeuk.Drawing;
+import org.firstinspires.ftc.teamcode.roadrunnerMeuk.Localizer;
 import org.firstinspires.ftc.teamcode.roadrunnerMeuk.messages.DriveCommandMessage;
 import org.firstinspires.ftc.teamcode.roadrunnerMeuk.messages.MecanumCommandMessage;
 import org.firstinspires.ftc.teamcode.roadrunnerMeuk.messages.MecanumLocalizerInputsMessage;
@@ -52,7 +54,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Config
-public final class MecanumDrive {
+public final class MecanumDriveRR {
     public static class Params {
         // IMU orientation
         // TODO: fill in these values based on
@@ -130,10 +132,10 @@ public final class MecanumDrive {
         private Pose2d pose;
 
         public DriveLocalizer(Pose2d pose) {
-            leftFront = new OverflowEncoder(new RawEncoder(MecanumDrive.this.leftFront));
-            leftBack = new OverflowEncoder(new RawEncoder(MecanumDrive.this.leftBack));
-            rightBack = new OverflowEncoder(new RawEncoder(MecanumDrive.this.rightBack));
-            rightFront = new OverflowEncoder(new RawEncoder(MecanumDrive.this.rightFront));
+            leftFront = new OverflowEncoder(new RawEncoder(MecanumDriveRR.this.leftFront));
+            leftBack = new OverflowEncoder(new RawEncoder(MecanumDriveRR.this.leftBack));
+            rightBack = new OverflowEncoder(new RawEncoder(MecanumDriveRR.this.rightBack));
+            rightFront = new OverflowEncoder(new RawEncoder(MecanumDriveRR.this.rightFront));
 
             imu = lazyImu.get();
 
@@ -216,7 +218,7 @@ public final class MecanumDrive {
         }
     }
 
-    public MecanumDrive(HardwareMap hardwareMap, Pose2d pose) {
+    public MecanumDriveRR(HardwareMap hardwareMap, Pose2d pose) {
         LynxFirmware.throwIfModulesAreOutdated(hardwareMap);
 
         for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {

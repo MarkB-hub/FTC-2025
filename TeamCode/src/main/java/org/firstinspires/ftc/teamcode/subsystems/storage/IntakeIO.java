@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.subsystems.intake;
+package org.firstinspires.ftc.teamcode.subsystems.storage;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 public class IntakeIO {
@@ -15,7 +14,7 @@ public class IntakeIO {
     }
 
     public void updateIntake(Gamepad gamepad1) {
-        if (gamepad1.b) {
+        if (gamepad1.a) {
             targetPower = 1;
         } else if (gamepad1.y) {
             targetPower = -1;

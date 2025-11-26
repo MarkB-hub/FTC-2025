@@ -11,7 +11,6 @@ import com.acmerobotics.roadrunner.ftc.DeadWheelDirectionDebugger;
 import com.acmerobotics.roadrunner.ftc.DriveType;
 import com.acmerobotics.roadrunner.ftc.DriveView;
 import com.acmerobotics.roadrunner.ftc.DriveViewFactory;
-import com.acmerobotics.roadrunner.ftc.Encoder;
 import com.acmerobotics.roadrunner.ftc.EncoderGroup;
 import com.acmerobotics.roadrunner.ftc.EncoderRef;
 import com.acmerobotics.roadrunner.ftc.ForwardPushTest;
@@ -40,7 +39,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
-import org.firstinspires.ftc.teamcode.roadrunnerMeuk.MecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystems.drive.MecanumDriveRR;
 import org.firstinspires.ftc.teamcode.roadrunnerMeuk.OTOSLocalizer;
 import org.firstinspires.ftc.teamcode.roadrunnerMeuk.PinpointLocalizer;
 import org.firstinspires.ftc.teamcode.roadrunnerMeuk.ThreeDeadWheelLocalizer;
@@ -52,7 +51,7 @@ import java.util.List;
 
 public final class TuningOpModes {
     // TODO: change this to TankDrive.class if you're using tank
-    public static final Class<?> DRIVE_CLASS = MecanumDrive.class;
+    public static final Class<?> DRIVE_CLASS = MecanumDriveRR.class;
 
     public static final String GROUP = "quickstart";
     public static final boolean DISABLED = false;
@@ -127,16 +126,16 @@ public final class TuningOpModes {
         if (DISABLED) return;
 
         DriveViewFactory dvf;
-        if (DRIVE_CLASS.equals(MecanumDrive.class)) {
+        if (DRIVE_CLASS.equals(MecanumDriveRR.class)) {
             dvf = hardwareMap -> {
-                MecanumDrive md = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+                MecanumDriveRR md = new MecanumDriveRR(hardwareMap, new Pose2d(0, 0, 0));
                 LazyImu lazyImu = md.lazyImu;
 
                 List<EncoderGroup> encoderGroups = new ArrayList<>();
                 List<EncoderRef> leftEncs = new ArrayList<>(), rightEncs = new ArrayList<>();
                 List<EncoderRef> parEncs = new ArrayList<>(), perpEncs = new ArrayList<>();
-                if (md.localizer instanceof MecanumDrive.DriveLocalizer) {
-                    MecanumDrive.DriveLocalizer dl = (MecanumDrive.DriveLocalizer) md.localizer;
+                if (md.localizer instanceof MecanumDriveRR.DriveLocalizer) {
+                    MecanumDriveRR.DriveLocalizer dl = (MecanumDriveRR.DriveLocalizer) md.localizer;
                     encoderGroups.add(new LynxQuadratureEncoderGroup(
                             hardwareMap.getAll(LynxModule.class),
                             Arrays.asList(dl.leftFront, dl.leftBack, dl.rightFront, dl.rightBack)
@@ -180,10 +179,10 @@ public final class TuningOpModes {
 
                 return new DriveView(
                     DriveType.MECANUM,
-                        MecanumDrive.PARAMS.inPerTick,
-                        MecanumDrive.PARAMS.maxWheelVel,
-                        MecanumDrive.PARAMS.minProfileAccel,
-                        MecanumDrive.PARAMS.maxProfileAccel,
+                        MecanumDriveRR.PARAMS.inPerTick,
+                        MecanumDriveRR.PARAMS.maxWheelVel,
+                        MecanumDriveRR.PARAMS.minProfileAccel,
+                        MecanumDriveRR.PARAMS.maxProfileAccel,
                         encoderGroups,
                         Arrays.asList(
                                 md.leftFront,
@@ -199,9 +198,9 @@ public final class TuningOpModes {
                         perpEncs,
                         lazyImu,
                         md.voltageSensor,
-                        () -> new MotorFeedforward(MecanumDrive.PARAMS.kS,
-                                MecanumDrive.PARAMS.kV / MecanumDrive.PARAMS.inPerTick,
-                                MecanumDrive.PARAMS.kA / MecanumDrive.PARAMS.inPerTick),
+                        () -> new MotorFeedforward(MecanumDriveRR.PARAMS.kS,
+                                MecanumDriveRR.PARAMS.kV / MecanumDriveRR.PARAMS.inPerTick,
+                                MecanumDriveRR.PARAMS.kA / MecanumDriveRR.PARAMS.inPerTick),
                         0
                 );
             };
