@@ -55,7 +55,7 @@ public class OpMode extends LinearOpMode {
         if (fl != null) fl.setDirection(DcMotorSimple.Direction.REVERSE);
         if (fr != null) fr.setDirection(DcMotorSimple.Direction.FORWARD);
         if (s != null) s.setDirection(DcMotorSimple.Direction.REVERSE);
-        if (st != null) st.setDirection(DcMotorSimple.Direction.REVERSE);
+        if (st != null) st.setDirection(DcMotorSimple.Direction.FORWARD);
 
         DriveIO drive = (fl != null && fr != null && bl != null && br != null) ? new DriveIO(fl, fr, bl, br, Constants.DRIVE_CONTROLLER_EXPONENT, imu) : null;
 

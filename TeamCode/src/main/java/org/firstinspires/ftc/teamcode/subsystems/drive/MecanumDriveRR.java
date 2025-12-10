@@ -70,9 +70,9 @@ public final class MecanumDriveRR {
         public double trackWidthTicks = 772.5174347759985;
 
         // feedforward parameters (in tick units)
-        public double kS = 0.6550542034922593;
-        public double kV = 0.004674676973224964;
-        public double kA = 0.0016;
+        public double kS = 0.7650542034922593;
+        public double kV = 0.004574676973224964;
+        public double kA = 0.0018;
 
         // path profile parameters (in inches)
         public double maxWheelVel = 50;
@@ -86,11 +86,11 @@ public final class MecanumDriveRR {
         // path controller gains
         public double axialGain = 11;
         public double lateralGain = 0.0;
-        public double headingGain = 8; // shared with turn
+        public double headingGain = 5; // shared with turn
 
         public double axialVelGain = 0.0;
         public double lateralVelGain = 0.0;
-        public double headingVelGain = 0.5; // shared with turn
+        public double headingVelGain = 0.3; // shared with turn
     }
 
     public static Params PARAMS = new Params();
@@ -492,5 +492,8 @@ public final class MecanumDriveRR {
                 defaultTurnConstraints,
                 defaultVelConstraint, defaultAccelConstraint
         );
+    }
+    public void resetPosition() {
+
     }
 }
