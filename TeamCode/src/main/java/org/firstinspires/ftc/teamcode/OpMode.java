@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.subsystems.vision.VisionLocalize;
 public class OpMode extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        DcMotor fl = null, fr = null, bl = null, br = null, s = null, i = null, st = null;
+        DcMotor fl = null, fr = null, bl = null, br = null, s1 = null, s2 = null, i = null, st = null;
         Servo shootServo = null, blockServo = null;
         WebcamName camera = null;
 
@@ -28,7 +28,9 @@ public class OpMode extends LinearOpMode {
         try { fr = hardwareMap.dcMotor.get("fr"); } catch (Exception e) { telemetry.addLine("Missing: fr"); }
         try { bl = hardwareMap.dcMotor.get("bl"); } catch (Exception e) { telemetry.addLine("Missing: bl"); }
         try { br = hardwareMap.dcMotor.get("br"); } catch (Exception e) { telemetry.addLine("Missing: br"); }
-        try { s = hardwareMap.dcMotor.get("shooter"); } catch (Exception e) { telemetry.addLine("Missing: shooter"); }
+        try { s1 = hardwareMap.dcMotor.get("shooter"); } catch (Exception e) { telemetry.addLine("Missing: shooter"); }
+        try { s2 = hardwareMap.dcMotor.get("shooter1"); } catch (Exception e) { telemetry.addLine("Missing: shooter"); }
+
         try { st = hardwareMap.dcMotor.get("storage"); } catch (Exception e) { telemetry.addLine("Missing: storage"); }
         try { i = hardwareMap.dcMotor.get("intake"); } catch (Exception e) { telemetry.addLine("Missing: intake"); }
         try { shootServo = hardwareMap.servo.get("shoot_servo"); } catch (Exception e) { telemetry.addLine("Missing: shooting servo"); }
@@ -54,12 +56,14 @@ public class OpMode extends LinearOpMode {
         if (br != null) br.setDirection(DcMotorSimple.Direction.FORWARD);
         if (fl != null) fl.setDirection(DcMotorSimple.Direction.REVERSE);
         if (fr != null) fr.setDirection(DcMotorSimple.Direction.FORWARD);
-        if (s != null) s.setDirection(DcMotorSimple.Direction.REVERSE);
+        if (s1 != null) s1.setDirection(DcMotorSimple.Direction.REVERSE);
+        if (s2 != null) s1.setDirection(DcMotorSimple.Direction.FORWARD);
+
         if (st != null) st.setDirection(DcMotorSimple.Direction.FORWARD);
 
         DriveIO drive = (fl != null && fr != null && bl != null && br != null) ? new DriveIO(fl, fr, bl, br, Constants.DRIVE_CONTROLLER_EXPONENT, imu) : null;
 
-        ShooterIO shooter = (s != null) ? new ShooterIO(s) : null;
+        ShooterIO shooter = (s1 != null) && (s2 != null) ? new ShooterIO(s1,s2) : null;
         if (shooter != null) {shooter.setRampRate(Constants.SHOOTER_RAMP_RATE); shooter.setShootingPower(Constants.DEFAULT_SHOOTER_SPEED);}
 
         StorageIO storage = (st != null) ? new StorageIO(st) : null;
