@@ -56,8 +56,8 @@ public class OpMode extends LinearOpMode {
         if (br != null) br.setDirection(DcMotorSimple.Direction.FORWARD);
         if (fl != null) fl.setDirection(DcMotorSimple.Direction.REVERSE);
         if (fr != null) fr.setDirection(DcMotorSimple.Direction.FORWARD);
-        if (s1 != null) s1.setDirection(DcMotorSimple.Direction.REVERSE);
-        if (s2 != null) s1.setDirection(DcMotorSimple.Direction.FORWARD);
+        if (s1 != null) s1.setDirection(DcMotorSimple.Direction.FORWARD);
+        if (s2 != null) s2.setDirection(DcMotorSimple.Direction.REVERSE);
 
         if (st != null) st.setDirection(DcMotorSimple.Direction.FORWARD);
 
