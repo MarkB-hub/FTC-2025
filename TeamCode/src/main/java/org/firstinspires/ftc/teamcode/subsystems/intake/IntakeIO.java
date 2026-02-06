@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems.storage;
+package org.firstinspires.ftc.teamcode.subsystems.intake;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -22,5 +22,9 @@ public class IntakeIO {
             targetPower = 0.0;
         }
         i.setPower(targetPower);
+    }
+
+    public void setPower(double power) {
+        i.setPower(power);
     }
 }

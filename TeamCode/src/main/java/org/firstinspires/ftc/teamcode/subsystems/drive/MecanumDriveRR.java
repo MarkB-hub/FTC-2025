@@ -57,21 +57,19 @@ import java.util.List;
 public final class MecanumDriveRR {
     public static class Params {
         // IMU orientation
-        // TODO: fill in these values based on
-        //   see https://ftc-docs.firstinspires.org/en/latest/programming_resources/imu/imu.html?highlight=imu#physical-hub-mounting
         public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
                 RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD;
         public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
                 RevHubOrientationOnRobot.UsbFacingDirection.LEFT;
 
         // drive model parameters
-        public double inPerTick = 23.622/526;
-        public double lateralInPerTick = 23.622/496.75;
-        public double trackWidthTicks = 772.5174347759985;
+        public double inPerTick = 23.7204724409/537;
+        public double lateralInPerTick = inPerTick;
+        public double trackWidthTicks = 615.7619187369128;
 
         // feedforward parameters (in tick units)
-        public double kS = 0.7650542034922593;
-        public double kV = 0.004574676973224964;
+        public double kS = 0.8210600657352353435;
+        public double kV = 0.004175670233978922;
         public double kA = 0.0018;
 
         // path profile parameters (in inches)
@@ -84,13 +82,13 @@ public final class MecanumDriveRR {
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 11;
-        public double lateralGain = 0.0;
-        public double headingGain = 5; // shared with turn
+        public double axialGain = 2;
+        public double lateralGain = 6;
+        public double headingGain = 1; // shared with turn
 
         public double axialVelGain = 0.0;
         public double lateralVelGain = 0.0;
-        public double headingVelGain = 0.3; // shared with turn
+        public double headingVelGain = 0.0; // shared with turn
     }
 
     public static Params PARAMS = new Params();
@@ -139,9 +137,9 @@ public final class MecanumDriveRR {
 
             imu = lazyImu.get();
 
-            // TODO: reverse encoders if needed
-            //   leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-            leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+            leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+            rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+            rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
             this.pose = pose;
         }
 
@@ -235,10 +233,13 @@ public final class MecanumDriveRR {
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        // TODO: reverse motor directions if needed
+        //   leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        // TODO: make sure your config has an IMU with this name (can be BNO or BHI)
-        //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+
         lazyImu = new LazyHardwareMapImu(hardwareMap, "imu", new RevHubOrientationOnRobot(
                 PARAMS.logoFacingDirection, PARAMS.usbFacingDirection));
 
@@ -450,14 +451,14 @@ public final class MecanumDriveRR {
     public PoseVelocity2d updatePoseEstimate() {
         PoseVelocity2d vel = localizer.update();
         poseHistory.add(localizer.getPose());
-        
+
         while (poseHistory.size() > 100) {
             poseHistory.removeFirst();
         }
 
         estimatedPoseWriter.write(new PoseMessage(localizer.getPose()));
-        
-        
+
+
         return vel;
     }
 
@@ -492,8 +493,5 @@ public final class MecanumDriveRR {
                 defaultTurnConstraints,
                 defaultVelConstraint, defaultAccelConstraint
         );
-    }
-    public void resetPosition() {
-
     }
 }

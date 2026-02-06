@@ -21,10 +21,10 @@ public final class ThreeRed extends LinearOpMode {
         DcMotor i = null, s = null, st = null;
         Servo shootServo = null, blockServo = null;
 
-
         Pose2d beginPose = new Pose2d(0, 0, 0);
+
         if (TuningOpModes.DRIVE_CLASS.equals(MecanumDriveRR.class)) {
-            MecanumDriveRR drive = new MecanumDriveRR(hardwareMap, beginPose);
+            MecanumDriveRR drive = new MecanumDriveRR(hardwareMap, new Pose2d(0, 0, 0));
             try { s = hardwareMap.dcMotor.get("shooter"); } catch (Exception e) { telemetry.addLine("Missing: shooter"); }
             try { st = hardwareMap.dcMotor.get("storage"); } catch (Exception e) { telemetry.addLine("Missing: storage"); }
             try { i = hardwareMap.dcMotor.get("intake"); } catch (Exception e) { telemetry.addLine("Missing: intake"); }
@@ -35,28 +35,29 @@ public final class ThreeRed extends LinearOpMode {
             if (s != null) s.setDirection(DcMotorSimple.Direction.REVERSE);
             if (st != null) st.setDirection(DcMotorSimple.Direction.FORWARD);
 
-
+            i.setDirection(DcMotorSimple.Direction.REVERSE);
 
             waitForStart();
-            blockServo.setPosition(0);
+            shootServo.setPosition(0.4);
+            blockServo.setPosition(0.3);
+
             s.setPower(Constants.DEFAULT_SHOOTER_SPEED);
 
             Actions.runBlocking(
                     drive.actionBuilder(beginPose)
-                            .strafeTo(new Vector2d(-100, 0))
-                            .turn(-43.7/180*Math.PI)
-                            .strafeTo(new Vector2d(-100,35))
+                            .strafeTo(new Vector2d(-10/2.54, 0))
                             .build());
+            sleep(4000);
 
-            st.setPower(0.2);
-            i.setPower(0.6);
-            sleep(1000);
-            shootServo.setPosition(0);
+            i.setPower(1);
+            st.setPower(1);
+
             sleep(2000);
-            st.setPower(0);
-            i.setPower(0);
-            blockServo.setPosition(0.5);
-            sleep(1500);
+            shootServo.setPosition(0);
+            sleep(1000);
+            shootServo.setPosition(0.4);
+            blockServo.setPosition(0);
+            stop();
         } else {
             throw new RuntimeException();
         }

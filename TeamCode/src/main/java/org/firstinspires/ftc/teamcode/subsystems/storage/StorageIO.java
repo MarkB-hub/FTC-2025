@@ -4,13 +4,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 public class StorageIO {
-    private DcMotor i;
+    private DcMotor st;
 
     private double targetPower = 0.0;
 
 
-    public StorageIO(DcMotor i) {
-        this.i = i;
+    public StorageIO(DcMotor st) {
+        this.st = st;
     }
 
     public void updateStorage(Gamepad gamepad1) {
@@ -21,6 +21,10 @@ public class StorageIO {
         } else {
             targetPower = 0.0;
         }
-        i.setPower(targetPower);
+        st.setPower(targetPower);
+    }
+
+    public void setPower(double power) {
+        st.setPower(power);
     }
 }
